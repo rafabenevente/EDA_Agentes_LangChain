@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     
     # Google AI Configuration
     google_api_key: str = Field(..., env="GOOGLE_API_KEY")
-    google_model: str = Field(default="gemini-pro", env="GOOGLE_MODEL")
+    google_model: str = Field(default="gemini-2.0-flash-lite", env="GOOGLE_MODEL")
     google_temperature: float = Field(default=0.7, env="GOOGLE_TEMPERATURE")
     google_max_tokens: int = Field(default=8192, env="GOOGLE_MAX_TOKENS")
     
@@ -30,10 +30,10 @@ class Settings(BaseSettings):
     cache_folder: str = Field(default="data/cache", env="CACHE_FOLDER")
     
     # Agent Configuration
-    agent_max_iterations: int = Field(default=10, env="AGENT_MAX_ITERATIONS")
-    max_agent_iterations: int = Field(default=10, env="AGENT_MAX_ITERATIONS")  # Alias para compatibilidade
+    agent_max_iterations: int = Field(default=20, env="AGENT_MAX_ITERATIONS")
+    max_agent_iterations: int = Field(default=20, env="AGENT_MAX_ITERATIONS")  # Alias para compatibilidade
     agent_memory_window_size: int = Field(default=10, env="AGENT_MEMORY_WINDOW_SIZE")
-    agent_temperature: float = Field(default=0.1, env="AGENT_TEMPERATURE")
+    agent_temperature: float = Field(default=0.7, env="AGENT_TEMPERATURE")
     
     # Cache Configuration
     enable_cache: bool = Field(default=True, env="ENABLE_CACHE")

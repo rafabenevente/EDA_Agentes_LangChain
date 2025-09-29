@@ -7,7 +7,6 @@ import logging
 from typing import Dict, Any, Optional
 import pandas as pd
 from langchain.agents import AgentExecutor, create_tool_calling_agent
-from langchain.memory import ConversationBufferWindowMemory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_google_genai import ChatGoogleGenerativeAI
 from config.settings import settings
@@ -64,7 +63,7 @@ class EDAAgent:
         """
         self.memory_key = memory_key
         self.memory_manager = MemoryManager()
-        self.memory = self.memory_manager.get_memory(memory_key)
+        self.memory = self.memory_manager.memory
         
         # Inicializar LLM
         self.llm = ChatGoogleGenerativeAI(
