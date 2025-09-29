@@ -1,0 +1,21 @@
+id,nome,idade,salario,departamento,data_contratacao,tem_graduacao,anos_experiencia
+1,João Silva,28,5500.50,TI,2022-01-15,true,5
+2,Maria Santos,34,7200.00,RH,2021-08-20,true,8
+3,Pedro Lima,29,4800.75,Marketing,2023-03-10,false,3
+4,Ana Costa,42,9500.25,TI,2020-05-12,true,12
+5,Carlos Oliveira,31,6300.80,Vendas,2022-09-08,true,7
+6,Lucia Ferreira,26,4200.00,Marketing,2023-01-25,false,2
+7,Roberto Alves,38,8100.50,TI,2019-11-30,true,15
+8,Sandra Pereira,33,5900.75,RH,2021-12-05,true,6
+9,Fernando Souza,45,11200.00,Diretoria,2018-04-18,true,20
+10,Camila Rodrigues,27,4600.25,Vendas,2023-02-14,false,4
+11,Rafael Torres,35,7800.00,TI,2020-10-22,true,10
+12,Juliana Mendes,30,5200.50,Marketing,2022-06-18,true,5
+13,Marcos Barbosa,41,9800.75,Diretoria,2019-07-09,true,18
+14,Patricia Gomes,29,5100.00,RH,2022-11-03,true,4
+15,Gustavo Silva,36,7500.25,TI,2021-03-27,true,11
+16,Fernanda Lima,32,6100.80,Vendas,2021-10-15,true,8
+17,Diego Santos,28,4900.50,Marketing,2023-05-08,false,3
+18,Larissa Costa,39,8700.00,TI,2020-02-14,true,14
+19,Bruno Oliveira,33,6800.25,Vendas,2022-04-20,true,9
+20,Vanessa Alves,31,5600.75,RH,2022-08-12,true,6
