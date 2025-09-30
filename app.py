@@ -32,6 +32,7 @@ try:
     from agents.eda_agent import EDAAgent
     from utils.data_loader import DataLoader
     from utils.memory_manager import MemoryManager
+    from tools.visualization_tools import get_created_visualizations, clear_visualizations
 except ImportError as e:
     st.error(f"Erro ao importar módulos: {e}")
     st.stop()
@@ -56,6 +57,9 @@ def initialize_session_state():
     
     if 'session_id' not in st.session_state:
         st.session_state.session_id = f"session_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    
+    if 'visualizations' not in st.session_state:
+        st.session_state.visualizations = []
 
 
 def display_header():
@@ -196,6 +200,29 @@ def display_chat_interface():
         for message in st.session_state.chat_history:
             with st.chat_message(message["role"]):
                 st.markdown(message["content"])
+                
+                # Exibir visualizações se existirem no histórico
+                if message.get("visualizations"):
+                    st.markdown("---")
+                    st.markdown("### 📊 Visualizações")
+                    for j, viz in enumerate(message["visualizations"]):
+                        try:
+                            if viz.get('title'):
+                                st.markdown(f"**{viz['title']}**")
+                            if viz.get('description'):
+                                st.markdown(viz['description'])
+                            
+                            # Reexibir o gráfico se a figura foi salva
+                            if viz.get('figure'):
+                                # Usar key único baseado no índice da mensagem e visualização
+                                msg_index = st.session_state.chat_history.index(message)
+                                chart_key = f"history_chart_{msg_index}_{j}"
+                                st.plotly_chart(viz['figure'], use_container_width=True, key=chart_key)
+                            else:
+                                st.info(f"📊 Gráfico {viz.get('type', 'desconhecido')} foi gerado nesta conversa")
+                        except Exception as viz_error:
+                            st.warning(f"⚠️ Não foi possível reexibir o gráfico: {viz.get('title', 'sem título')}")
+                            logger.error(f"Erro ao reexibir visualização: {viz_error}")
     
     # Input para nova mensagem
     if prompt := st.chat_input("Faça uma pergunta sobre seus dados..."):
@@ -214,17 +241,62 @@ def display_chat_interface():
         with st.chat_message("assistant"):
             with st.spinner("🤔 Analisando..."):
                 try:
+                    # Limpar visualizações anteriores
+                    clear_visualizations()
+                    
+                    # Processar resposta do agente
                     response = st.session_state.eda_agent.analyze(prompt)
                     
                     # Exibir resposta
                     st.markdown(response)
                     
-                    # Adicionar ao histórico
-                    st.session_state.chat_history.append({
+                    # Verificar se foram criadas visualizações
+                    new_visualizations = get_created_visualizations()
+                    message_visualizations = []
+                    
+                    if new_visualizations:
+                        st.markdown("---")
+                        st.markdown("### 📊 Visualizações Geradas")
+                        
+                        for i, viz in enumerate(new_visualizations):
+                            try:
+                                # Exibir título da visualização
+                                if viz.get('title'):
+                                    st.markdown(f"**{viz['title']}**")
+                                
+                                # Exibir descrição se existir
+                                if viz.get('description'):
+                                    st.markdown(viz['description'])
+                                
+                                # Exibir o gráfico
+                                if viz.get('figure'):
+                                    # Usar key único para cada gráfico para evitar conflitos
+                                    chart_key = f"chart_{len(st.session_state.chat_history)}_{i}"
+                                    st.plotly_chart(viz['figure'], use_container_width=True, key=chart_key)
+                                    
+                                    # Armazenar visualização completa para o histórico
+                                    message_visualizations.append({
+                                        'type': viz['type'],
+                                        'title': viz.get('title', ''),
+                                        'description': viz.get('description', ''),
+                                        'figure': viz['figure']  # Armazenar a figura também
+                                    })
+                                
+                            except Exception as viz_error:
+                                st.error(f"Erro ao exibir gráfico: {str(viz_error)}")
+                                logger.error(f"Erro na visualização: {viz_error}")
+                    
+                    # Adicionar ao histórico com visualizações
+                    message_data = {
                         "role": "assistant",
                         "content": response,
                         "timestamp": datetime.now()
-                    })
+                    }
+                    
+                    if message_visualizations:
+                        message_data["visualizations"] = message_visualizations
+                    
+                    st.session_state.chat_history.append(message_data)
                     
                 except Exception as e:
                     error_msg = f"❌ Erro na análise: {str(e)}"
@@ -236,6 +308,8 @@ def display_chat_interface():
 def clear_conversation():
     """Limpa o histórico da conversa"""
     st.session_state.chat_history = []
+    st.session_state.visualizations = []
+    clear_visualizations()  # Limpar visualizações das ferramentas
     if st.session_state.eda_agent:
         st.session_state.eda_agent.clear_memory()
     st.success("🧹 Conversa limpa!")

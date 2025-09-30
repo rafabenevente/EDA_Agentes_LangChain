@@ -3,14 +3,12 @@ Ferramentas para detecção e análise de outliers/anomalias
 """
 
 import logging
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Any
 import pandas as pd
 import numpy as np
-from scipy import stats
 from sklearn.ensemble import IsolationForest
 from sklearn.neighbors import LocalOutlierFactor
 from sklearn.preprocessing import StandardScaler
-from sklearn.cluster import DBSCAN
 from langchain.tools import tool
 def get_current_dataframe():
     """Retorna o dataframe atual (importado do agente principal)"""
@@ -24,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 @tool
-def detect_outliers_iqr(columns: str = None, factor: float = 1.5) -> Dict[str, Any]:
+def detect_outliers_iqr(factor: float = 1.5, columns: str = None,) -> Dict[str, Any]:
     """
     Detecta outliers usando o método IQR (Interquartile Range).
     
@@ -509,7 +507,7 @@ def detect_outliers_lof(columns: str = None, n_neighbors: int = 20,
 
 
 @tool
-def compare_outlier_methods(columns: str = None) -> Dict[str, Any]:
+def compare_outlier_methods(columns: str|None = None) -> Dict[str, Any]:
     """
     Compara diferentes métodos de detecção de outliers.
     
