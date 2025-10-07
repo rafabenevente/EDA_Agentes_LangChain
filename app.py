@@ -84,7 +84,7 @@ def display_sidebar():
         uploaded_file = st.file_uploader(
             "Escolha um arquivo CSV",
             type="csv",
-            help="Carregue um arquivo CSV para análise (máximo 100MB)"
+            help="Carregue um arquivo CSV para análise (máximo 50MB)",
         )
         
         if uploaded_file is not None:
